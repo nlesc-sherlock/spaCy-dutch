@@ -1,4 +1,8 @@
-from spacy.vocab import Vocab
+"""
+Use:
+python NERtagger.py /path/to/CONLLdata/ /path/to/store/model
+"""
+
 from spacy.pipeline import EntityRecognizer
 from spacy.tokens import Doc
 from spacy.gold import GoldParse
@@ -8,6 +12,12 @@ import os
 from spacy.nl import Dutch
 
 def bio_to_biluo(labels):
+    """
+    Converts BIO tagging to BILUO tagging
+
+    :param labels:
+    :return:
+    """
     output = [x for x in labels]
     labels = ['O'] + labels + ['O']
     for i in range(0, len(labels) - 1):
