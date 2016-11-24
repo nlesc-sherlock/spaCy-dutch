@@ -5,7 +5,7 @@ from spacy.gold import GoldParse
 import codecs
 import json
 import os
-
+from spacy.nl import Dutch
 
 def bio_to_biluo(labels):
     output = [x for x in labels]
@@ -63,8 +63,8 @@ def train_NER(filepath, vocab, iterations=20):
     print("Done training.")
     return docs, ner
 
-def save_model(model_dir):
-    with (os.path.join(model_dir, 'config.json')).open('w') as file_:
+def save_model(ner, model_dir):
+    with open(os.path.join(model_dir, 'config.json'), 'w') as file_:
         json.dump(ner.cfg, file_)
     ner.model.dump(os.path.join(model_dir, 'model'))
 
@@ -77,11 +77,11 @@ if __name__ == '__main__':
     filepath_train = filepath+'ned.train'
     filepath_test = filepath+'ned.testa'
 
-    vocab = Vocab()
+    vocab = Dutch().vocab
     docs, ner = train_NER(filepath_train, vocab, iterations=30)
     docs_test, entities_test = read_connl(filepath_test, vocab)
 
-    save_model(model_dir)
+    save_model(ner, model_dir)
     # Print example tagging:
     doc = docs_test[2]
     ner(doc)
