@@ -24,7 +24,7 @@ tag_mapping = {
     'VNW': 'PRON',  # pronoun (voornaamwoord)
     'VG(onder': 'SCONJ',  # subordinating conjunction (onderschikkend voegwoord)
     'LET': 'PUNCT',  # punctuation (leesteken)
-    #: 'SYM',  # symbol
+    'SPEC(symb': 'SYM',  # symbol
     'SPEC': 'X'  # other (speciale tekens)
 }
 
