@@ -6,10 +6,13 @@ python NERtagger.py /path/to/CONLLdata/ /path/to/store/model
 from spacy.pipeline import EntityRecognizer
 from spacy.tokens import Doc
 from spacy.gold import GoldParse
+import spacy
 import codecs
 import json
 import os
 from spacy.nl import Dutch
+
+LABELS = ['PER', 'LOC', 'ORG', 'MISC', 'PRO', 'EVE']
 
 def bio_to_biluo(labels):
     """
@@ -64,7 +67,7 @@ def read_connl(filepath, vocab):
 def train_NER(filepath, vocab, iterations=20):
     print("Training {} iterations".format(iterations))
     docs, entities = read_connl(filepath, vocab)
-    ner = EntityRecognizer(vocab, entity_types=['PER', 'LOC', 'ORG', 'MISC'])
+    ner = EntityRecognizer(vocab, entity_types=LABELS)
     for i in range(iterations):
         if i%5 == 0:
             print("Iteration {}...".format(i))
@@ -87,7 +90,7 @@ if __name__ == '__main__':
     filepath_train = filepath+'ned.train'
     filepath_test = filepath+'ned.testa'
 
-    vocab = Dutch().vocab
+    vocab = spacy.load('nl').vocab
     docs, ner = train_NER(filepath_train, vocab, iterations=30)
     docs_test, entities_test = read_connl(filepath_test, vocab)
 
