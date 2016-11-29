@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import click
 import codecs
+import json
 
 import pandas as pd
 
@@ -16,14 +17,14 @@ tag_mapping = {
     'WW': 'VERB',  # verb (werkwoord)
     'VZ': 'ADP',  # adposition (voorzetsel (preposition))
     #: 'AUX',  # auxiliary verb (hulpwerkwoord -> not available in CGN)
-    'VG(neven)': 'CONJ',  # coordinating conjunction (neveschikkend voegwoord)
+    'VG(neven': 'CONJ',  # coordinating conjunction (neveschikkend voegwoord)
     'LID': 'DET',  # determiner (lidwoorden, telwoorden, aanwijzende voornaamwoorden, bezittelijke voornaamwoorden, en kwantoren)
     'TW(hoofd': 'NUM',  # numeral (hoofdtelwoord)
-    : 'PART',  # particle
+    #: 'PART',  # particle
     'VNW': 'PRON',  # pronoun (voornaamwoord)
-    'VG(onder)': 'SCONJ'  # subordinating conjunction (onderschikkend voegwoord)
+    'VG(onder': 'SCONJ',  # subordinating conjunction (onderschikkend voegwoord)
     'LET': 'PUNCT',  # punctuation (leesteken)
-    : 'SYM',  # symbol
+    #: 'SYM',  # symbol
     'SPEC': 'X'  # other (speciale tekens)
 }
 
@@ -36,17 +37,18 @@ def command(meta_in, meta_out):
 
     cgn_tags = pd.read_csv(meta_in, index_col=0, encoding='utf-8')
 
-    heads = []
+    result = {}
 
     for tag in cgn_tags.index:
         click.echo(tag)
-        head = tag.split('(')[0]
-        heads.append(head)
+        for cgn, uni in tag_mapping.iteritems():
+            if tag.startswith(cgn):
+                result[tag] = {'pos': uni}
 
-    click.echo(set(heads))
+    click.echo(result)
 
-    #with codecs.open(meta_out, 'wb', encoding='utf-8') as f:
-    #    pass
+    with codecs.open(meta_out, 'wb', encoding='utf-8') as f:
+        json.dump(result, f, indent=4, encoding='utf-8')
 
 
 if __name__ == '__main__':
