@@ -65,4 +65,4 @@ NER
 * Document what we have done + performance
 * Train brown clusters and add to training of tagger, ner and dep
 * Why is lexemes.bin empty? 
-* Create vocab from wikipedia corpus as in (bin/init_model.py)[https://github.com/nlesc-sherlock/spaCy/blob/master/bin/init_model.py]
+* Create vocab from wikipedia corpus as in [bin/init_model.py](https://github.com/nlesc-sherlock/spaCy/blob/master/bin/init_model.py)
