@@ -43,7 +43,7 @@ NER
 * crafted a [tag-map](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/data/nl-0.1.0/vocab/tag_map.json) for Dutch, to use universal POS tags
 * Added this tag_map also to `spacy/nl/language_data.py`
 * Trained a POS tagger on [UD data](https://github.com/UniversalDependencies/UD_Dutch) (see [this notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/Dutch%20tagger%20UD%20data.ipynb))
-* After training the POS tagger, we exported the Vocab files `strings.json`, `serializer.json`, `lexemes.bin` 
+* After training the POS tagger, we exported the Vocab files `strings.json`, `serializer.json`, `lexemes.bin`
 * We created a data folder nl-0.1.0 and we put `tag_map.json` and the files from the previous point in the subfolder `vocab`
 * In `nl-0.1.0/vocab/` we also created an empty `lemma_rules.json` and we copied the `gazetteer.json` from the English data folder
 * The Tagger model was exported to `nl-0.1.0/pos`.
@@ -57,3 +57,10 @@ NER
 ## Ideas for further improvement
 * Throw away short sentences in the training data
 * Threshold pos tags on confidence
+* Create download script for Dutch language data
+* Make pull request with what we've got (so others can help)
+* Train NER
+* Train DEP
+* Evaluate POS. NER, DEP
+* Document what we have done + performance
+* Train brown clusters and add to training of tagger, ner and dep
