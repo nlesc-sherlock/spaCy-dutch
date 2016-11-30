@@ -71,7 +71,7 @@ def read_connl(filepath, vocab):
 
 def train_NER(filepath, vocab, iterations=20):
     print("Training {} iterations".format(iterations))
-    docs, entities = read_connl(filepath, vocab)
+    docs, postags, entities = read_connl(filepath, vocab)
     ner = EntityRecognizer(vocab, entity_types=LABELS)
     for i in range(iterations):
         if i%5 == 0:
@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
     vocab = spacy.load('nl').vocab
     docs, ner = train_NER(filepath_train, vocab, iterations=30)
-    docs_test, entities_test = read_connl(filepath_test, vocab)
+    docs_test, pos_test, entities_test = read_connl(filepath_test, vocab)
 
     save_model(ner, model_dir)
     # Print example tagging:
