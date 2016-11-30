@@ -64,3 +64,4 @@ NER
 * Evaluate POS. NER, DEP
 * Document what we have done + performance
 * Train brown clusters and add to training of tagger, ner and dep
+* Why is lexemes.bin empty?
