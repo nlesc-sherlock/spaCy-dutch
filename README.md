@@ -33,3 +33,7 @@ Parser
 NER
 *	Cfg = Deps/config.json
 * model = Deps/model
+
+
+## Ideas for further improvement
+* Throw away short sentences in the training data

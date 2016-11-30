@@ -1,7 +1,7 @@
 #!/usr/bin/env cwlrunner
 cwlVersion: cwl:v1.0
 class: CommandLineTool
-baseCommand: ["python", "-m", "nlppln.extract_pos_tags"]
+baseCommand: ["python", "/home/jvdzwaan/code/spaCy-dutch/commands/extract_pos_tags.py"]
 arguments:
   - valueFrom: $(runtime.outdir)/
     position: 4
@@ -19,4 +19,3 @@ outputs:
   type: File
   outputBinding:
     glob: ""
-
