@@ -33,7 +33,7 @@ def bio_to_biluo(labels):
 
 def read_connl(filepath, vocab):
     """
-    Reads the CONLL data and creates Doc objects for each sentence.
+    Reads the CONLL 2002 data and creates Doc objects for each sentence.
     Also reads the entitiy labels.
 
     :param filepath:
@@ -42,26 +42,31 @@ def read_connl(filepath, vocab):
     """
     docs = []
     entities = []
+    postags = []
     f = codecs.open(filepath, encoding='ISO-8859-15')
 
     doc_list = []
     entities_list = []
+    postags_list = []
     for line  in f:
         splitted = line.split(' ')
         if len(splitted)!=3 or splitted[0] == '-DOCSTART-':
             if(len(doc_list)>0):
                 docs.append(Doc(vocab, words=doc_list))
                 entities.append(bio_to_biluo(entities_list))
+                postags.append(postags_list)
                 doc_list = []
                 entities_list = []
+                postags_list = []
         else:
             word, pos, label = splitted
             doc_list.append(unicode(word))
+            postags_list.append(pos.strip())
             entities_list.append(label.strip())
     docs.append(Doc(vocab, doc_list))
     entities.append(entities_list)
     print('CONNL dataset loaded.')
-    return docs, entities
+    return docs, postags, entities
 
 
 def train_NER(filepath, vocab, iterations=20):
