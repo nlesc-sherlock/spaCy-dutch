@@ -51,10 +51,17 @@ NER
 * We trained the NER model based on [CONLL2002 data](http://www.cnts.ua.ac.be/conll2002/ner/) (see [NERtagger](https://github.com/nlesc-sherlock/spaCy-dutch/tree/master/models))
 * The NER model was exported to `nl-0.1.0/ner`.
 * Created Notebooks to evaluate [NER](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/EvaluateNER.ipynb) and [POS tagging](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/EvaluateTagger.ipynb)
-
+* Used spacy/bin/init_model.py to initalize the vocabulary. We did the following as prepartion:
+ * Created brown clusters on the first 9999 items of wikipedia, see scripts/brown-clusters.sh
+ * Created word2vec models with glove on the same corpus, see scripts/nlwiki.sh
+ * Created a frequency file on the same corpus, see notebooks/CreateFrequencies.ipynb
 
 
 ## Ideas for further improvement
+* Better brown clustering (more clusters, larger corpus)
+* Calculate frequencies on larger corpus
+* Better word2vec: longer vectors, larger corpus
+* specifiy input for tokenizer (pre/in/suffixes etc) for Dutch (now it is copied for German)
 * Throw away short sentences in the training data
 * Threshold pos tags on confidence
 * Create download script for Dutch language data
@@ -63,6 +70,3 @@ NER
 * Train DEP
 * Evaluate POS. NER, DEP
 * Document what we have done + performance
-* Train brown clusters and add to training of tagger, ner and dep
-* Why is lexemes.bin empty? 
-* Create vocab from wikipedia corpus as in [bin/init_model.py](https://github.com/nlesc-sherlock/spaCy/blob/master/bin/init_model.py)
