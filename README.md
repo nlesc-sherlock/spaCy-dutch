@@ -212,6 +212,7 @@ File | Copied/Generated | Source
   * Retrain POS tagger
   * Retrain NER
 * Train Dependency parser (fix error)
+* Add tests for models
 
 ### Nice to have/experiment with
 
@@ -220,3 +221,4 @@ File | Copied/Generated | Source
 * Threshold POS tags on confidence
 * Create download script for Dutch language data
 * More thourough evaluation of POS, NER, and DEP
+* Add [Dutch WordNet](https://github.com/cltl/OpenDutchWordnet)
