@@ -71,7 +71,7 @@ if (($BROWN > 0));  then
     cd brown-cluster
     make
     ./wcluster --text $CORPUS  --c $NCLUSTERS --output_dir $TEMP/brown
-    mv $TEMP/brown/paths $TEMP/$LANG_ID/corpus.txt
+    cp $TEMP/brown/paths $TEMP/$LANG_ID/clusters.txt
     cd ..
     rm -rf brown-cluster
     rm $CORPUS.int $CORPUS.strdb
