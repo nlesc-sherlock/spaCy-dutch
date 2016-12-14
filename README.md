@@ -47,11 +47,37 @@ In this notebook, the following data files are generated:
 * `vocab/tag_map.json`
 * `vocab/serializer.json`
 * `pos/model`
-*
 
 ### Named Entity Recognizer
 
 ### Dependency parser
+
+**Note** training the dependency parser for Dutch is not finished yet.
+
+The dependency parser was trained using [UD_Dutch-LassySmall](https://github.com/UniversalDependencies/UD_Dutch-LassySmall).
+This [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/train%20dutch%20dependency%20parser.ipynb)
+explains how the parser was trained.
+
+First, we had to transform the training data, because spaCy uses a different numbering
+of the heads than what is provided in the data.
+
+```
+# format used in UD_Dutch-LassySmall
+words = [u'In', u'werkelijkheid', u'werd', u'hij', u'gevangen', u'genomen', u'door', u'de', u'Britse', u'generaal', u'Halkett', u'.']
+heads = [2, 6, 6, 6, 6, 0, 10, 10, 10, 6, 10, 6]
+deps = [u'case', u'nmod', u'auxpass', u'nsubj', u'compound', 'root', u'case', u'det', u'amod', u'nmod', u'appos', u'punct']
+
+# same sentence in spaCy format
+words = [u'In', u'werkelijkheid', u'werd', u'hij', u'gevangen', u'genomen', u'door', u'de', u'Britse', u'generaal', u'Halkett', u'.']
+heads = [1, 5, 5, 5, 5, 5, 9, 9, 9, 5, 9, 5]
+deps = [u'case', u'nmod', u'auxpass', u'nsubj', u'compound', 'root', u'case', u'det', u'amod', u'nmod', u'appos', u'punct']
+```
+Training the parser with this data results in the following error message:
+
+```
+ValueError: Could not find a gold-standard action to supervise the dependency parser.
+The GoldParse was projective.
+```
 
 ### Language data
 The data generated should consist of the following files:
