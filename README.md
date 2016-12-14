@@ -65,8 +65,14 @@ NER
 * Throw away short sentences in the training data
 * Threshold pos tags on confidence
 * Create download script for Dutch language data
-* Make pull request with what we've got (so others can help)
 * Train NER
 * Train DEP
 * Evaluate POS. NER, DEP
 * Document what we have done + performance
+<<<<<<< HEAD
+* Train brown clusters and add to training of tagger, ner and dep
+* Why is lexemes.bin empty?
+* Create vocab from wikipedia corpus as in [bin/init_model.py](https://github.com/nlesc-sherlock/spaCy/blob/master/bin/init_model.py)
+* Goal: Make pull request with what we've got (so others can help)
+=======
+>>>>>>> 02ae5b72cb4a77b8da4c741d13fff794c0291984
