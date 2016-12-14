@@ -2,7 +2,7 @@
 ###################################################
 # This script creates the vocab data for a language.
 # Usage:
-# createvocab.sh path/to/temp corpusfile path/to/corpus outputpath
+# createvocab.sh path/to/temp path/to/corpus outputpath
 ###################################################
 
 ###################################################
@@ -14,13 +14,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # absolute path where all intermediate results are stored
 TEMP=$(pwd)/temp
 
-# Path to corpus file, for brown clusters and word2vec.
-# This should be one utf-8 encoded file, with tokenized content.
-CORPUS=$1
-
 # Path to corpus directory, containing one file for each document.
 # These documents will be tokenized with spacy's tokenizer
-CORPUS_DIR=$2
+CORPUS_DIR=$1
 
 # Path to directory with input files. This should contain the following:
 #        * prefix.txt
@@ -31,15 +27,17 @@ CORPUS_DIR=$2
 #       * gazetteer.json
 #       * tagmap.json
 #       * lemma_rules.json
-INPUTPATH=$3
+INPUTPATH=$2
 
 # Output path where the vocab data will be stored
-OUTPUTPATH=$4
+OUTPUTPATH=$3
 
 # Nr of brown clusters to train
-NCLUSTERS=10
-# Vector length for word2vec
-VECTOR_SIZE=50
+NCLUSTERS=100
+# Vector length for word2vec - 300
+VECTOR_SIZE=300
+# Window size for word2vec
+WINDOW_SIZE=5
 
 # Which steps are executed
 BROWN=1
@@ -55,17 +53,25 @@ mkdir -p $TEMP/$LANG_ID/
 cp $INPUTPATH/* $TEMP/$LANG_ID/
 
 ###################################################
+# Build corpus file
+###################################################
+echo "Build the corpus file..."
+CORPUS=$TEMP/corpus.txt
+python $DIR/build_corpusfile.py $LANG_ID $CORPUS_DIR $CORPUS
+
+###################################################
 # Brown Clusters
 # Clone and compile the code from github for brown clustering
 # Then run it on the corpus
 ###################################################
 if (($BROWN > 0));  then
+    echo "Training brown clusters..."
     mkdir -p $TEMP/brown
     git clone https://github.com/percyliang/brown-cluster
     cd brown-cluster
     make
     ./wcluster --text $CORPUS  --c $NCLUSTERS --output_dir $TEMP/brown
-    mv $TEMP/brown/paths $TEMP/$LANG_ID/corpus.txt
+    cp $TEMP/brown/paths $TEMP/$LANG_ID/clusters.txt
     cd ..
     rm -rf brown-cluster
     rm $CORPUS.int $CORPUS.strdb
@@ -86,12 +92,12 @@ MEMORY=4.0
 VOCAB_FILE=vocab.txt
 VOCAB_MIN_COUNT=5
 MAX_ITER=15
-WINDOW_SIZE=15
 BINARY=2
 NUM_THREADS=8
 X_MAX=10
 
 if (($WORD2VEC > 0));  then
+    echo "Training word2vec..."
     #mkdir $TEMP/vectors
     git clone https://github.com/stanfordnlp/GloVe glove/
     cd glove
@@ -128,6 +134,7 @@ fi
 # Count frequencies
 ###################################################
 if (($FREQS > 0));  then
+    echo "Counting frequencies..."
     python $DIR/count_frequencies.py $LANG_ID $CORPUS_DIR $TEMP/$LANG_ID
     gzip $TEMP/$LANG_ID/freqs.txt
 fi
@@ -136,6 +143,7 @@ fi
 ###################################################
 # Create the actual vocab data
 ###################################################
+echo "Creating the vocab data..."
 python $DIR/init_model.py $LANG_ID $TEMP $TEMP $OUTPUTPATH
 
 
