@@ -1,7 +1,110 @@
 # spaCy-dutch
 Repository for creating models, vocabulary and other necessities for Dutch in Spacey
 
-## Language data
+## Data used for generating Dutch language resources
+
+### Brown clusters and word frequencies
+
+To generate Brown clusters and word frequencies, we used a (small) subset of the
+Dutch Wikipedia. To be precise, we used the first 10000 documents from the
+[Wikipedia dump of November 20, 2016](https://dumps.wikimedia.org/nlwiki/20161120/).
+
+After downloading the dump files
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles1.xml.bz2
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles2.xml.bz2
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles3.xml.bz2
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles4.xml.bz2
+
+article text was extracted using [sift](https://github.com/wikilinks/sift) (requires
+[pyspark](http://spark.apache.org/docs/0.9.0/python-programming-guide.html)).
+See [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/extract%20wikipedia%20dump.ipynb)
+
+TODO: refer to training script
+
+### POS tagger
+
+The POS tagger was trained using the Dutch data from Universal Dependencies:
+* [UD_Dutch](https://github.com/UniversalDependencies/UD_Dutch)
+* [UD_Dutch-LassySmall](https://github.com/UniversalDependencies/UD_Dutch-LassySmall)
+
+For training, we used both train sets and for testing we used both test sets.
+See the [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/Dutch%20tagger%20UD%20data.ipynb)
+for number of training iterations and performance plots.
+
+The accuracy on the test set is 88.57 when using an empty vocabulary and default
+lexical attributes. When using the
+Dutch vocab (i.e., adding Brown clusters and word frequencies), accuracy is 88.43.
+Using the Dutch vocabulary did not improve POS tagger accuracy. This probably is
+due to the small corpus used to generate the Brown clusters, and the small number of
+clusters extracted. It is likely that the performance of the POS tagger will
+increase if it is retrained using better Brown cluster data.
+
+[Notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/Dutch%20tagger%20UD%20data.ipynb)
+with code for training and evaluating the POS tagger (based on
+[this example](https://github.com/explosion/spaCy/blob/master/examples/training/train_tagger.py)).
+In this notebook, the following data files are generated:
+
+* `vocab/tag_map.json`
+* `vocab/serializer.json`
+* `pos/model`
+
+### Named Entity Recognizer
+
+The NER was trained using data from [CoNLL 2002](http://www.cnts.ua.ac.be/conll2002/ner.tgz)
+([more info](http://www.cnts.ua.ac.be/conll2002/ner/)). *The UD_Dutch(-LassySmall) data does
+not contain NER data.*
+
+After downloading and extracting the data (files `data/ned.train.gz`, `data/ned.testa`,
+`data/ned.testb`), run the script to create the NER component:
+```
+python models/NERtagger.py /path/to/CONLLdata/ /path/to/store/model/files
+```
+
+The NER component is trained for 30 iterations.
+
+Performance can be calculated using [this
+notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/EvaluateNER.ipynb).
+
+Test set | Precision | Recall | F-measure
+--- | --- | --- | ---
+CoNLL 2002 testa | 68.95 | 66.23 | 67.56
+CoNLL 2002 testb | 73.61 | 71.42 | 72.50
+
+Compared to the [results from CoNLL 2002](http://www.cnts.ua.ac.be/conll2002/ner/),
+this performance is not bad, but not extremely good either.
+
+Improved POS tagging mifgt benefit these results.
+
+### Dependency parser
+
+**Note** training the dependency parser for Dutch is not finished yet.
+
+The dependency parser was trained using [UD_Dutch-LassySmall](https://github.com/UniversalDependencies/UD_Dutch-LassySmall).
+This [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/train%20dutch%20dependency%20parser.ipynb)
+explains how the parser was trained.
+
+First, we had to transform the training data, because spaCy uses a different numbering
+of the heads than what is provided in the data.
+
+```
+# format used in UD_Dutch-LassySmall
+words = [u'In', u'werkelijkheid', u'werd', u'hij', u'gevangen', u'genomen', u'door', u'de', u'Britse', u'generaal', u'Halkett', u'.']
+heads = [2, 6, 6, 6, 6, 0, 10, 10, 10, 6, 10, 6]
+deps = [u'case', u'nmod', u'auxpass', u'nsubj', u'compound', 'root', u'case', u'det', u'amod', u'nmod', u'appos', u'punct']
+
+# same sentence in spaCy format
+words = [u'In', u'werkelijkheid', u'werd', u'hij', u'gevangen', u'genomen', u'door', u'de', u'Britse', u'generaal', u'Halkett', u'.']
+heads = [1, 5, 5, 5, 5, 5, 9, 9, 9, 5, 9, 5]
+deps = [u'case', u'nmod', u'auxpass', u'nsubj', u'compound', 'root', u'case', u'det', u'amod', u'nmod', u'appos', u'punct']
+```
+Training the parser with this data results in the following error message:
+
+```
+ValueError: Could not find a gold-standard action to supervise the dependency parser.
+The GoldParse was projective.
+```
+
+### Language data
 The data generated should consist of the following files:
 
 Lemmatizer:
@@ -69,10 +172,7 @@ NER
 * Train DEP
 * Evaluate POS. NER, DEP
 * Document what we have done + performance
-<<<<<<< HEAD
 * Train brown clusters and add to training of tagger, ner and dep
 * Why is lexemes.bin empty?
 * Create vocab from wikipedia corpus as in [bin/init_model.py](https://github.com/nlesc-sherlock/spaCy/blob/master/bin/init_model.py)
 * Goal: Make pull request with what we've got (so others can help)
-=======
->>>>>>> 02ae5b72cb4a77b8da4c741d13fff794c0291984
