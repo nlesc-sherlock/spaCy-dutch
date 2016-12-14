@@ -212,7 +212,7 @@ File | Copied/Generated | Source
   * Retrain POS tagger
   * Retrain NER
 * Train Dependency parser (fix error)
-* Add tests for models
+* Add model sanity tests
 
 ### Nice to have/experiment with
 
