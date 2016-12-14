@@ -34,8 +34,8 @@ pip install -e .
 ## Add Dutch language data folder
 
 This README specifies how we trained models for Dutch. The resulting models and
-other data can be downloaded from Zenodo. After downloading and extracting the archive,
-copy the nl-0.1.0 folder to `spaCy/spacy/data`.
+other data can be downloaded from [Zenodo](http://doi.org/10.5281/zenodo.202662).
+After downloading and extracting the archive, copy the nl-0.1.0 folder to `spaCy/spacy/data`.
 
 The Dutch pipeline using trained models can now be loaded with:
 ```
@@ -73,7 +73,7 @@ sh scripts/createvocab.sh path/to/temp path/to/corpus outputpath
 for each document in the corpus. The files should be utf-8 encoded.
 
 Settings used to generate the Dutch data:
-* the corpus consists of 9999 (more or less random) Wikipedia articles (**this is much too small!**)
+* the corpus consists of 999 (more or less random) Wikipedia articles (**this is much too small!**)
 * 100 Brown clusters (**this is much too small!**)
 * vector size 300 and window size 5
 
@@ -83,7 +83,11 @@ deleted when the script is done.
 
 The script creates files:
 
-*
+* `vocab/lexems.bin`
+* `vocab/oov_prob`
+* `vocab/strings.json`
+* `vocab/tag_map.json`
+* `vocab/vec.bin`
 
 ## POS tagger
 
@@ -176,72 +180,43 @@ The GoldParse was projective.
 ## Language data
 The data generated should consist of the following files:
 
-Lemmatizer:
-*	Index= Wordnet/index.{pos}
-*	Exceptions = Wordnet/{pos}.exc
-*	Rules = Vocab/lemma_rules.json
+File | Copied/Generated | Source
+--- | --- | ---
+`deps/config.json` | Generated | n.a.
+`deps/model` | Generated | n.a.
+`ner/config.json` | Generated | NER
+`ner/model` | Generated | NER
+`pos/model` | Generated | POS tagger
+`tokenizer/infix.txt` | Copied | German language data
+`tokenizer/morphs.json` | Copied | German language data
+`tokenizer/prefix.json` | Copied | German language data
+`tokenizer/specials.json` | Copied | German language data
+`tokenizer/suffix.json` | Copied | German language data
+`vocab/gazetteer.json` | Copied | German language data
+`vocab/lemma_rules.json` | Copied | German language data
+`vocab/lexems.bin` | Generated | `scripts/createvocab.sh`
+`vocab/oov_prob` | Generated | `scripts/createvocab.sh`
+`vocab/serializer.json` | Generated | POS tagger
+`vocab/strings.json` | Generated | `scripts/createvocab.sh`
+`vocab/tag_map.json` | Generated | `scripts/createvocab.sh`
+`vocab/vec.bin` | Generated | `scripts/createvocab.sh`
 
-Vocab:
-*	Lex_attr_getters, tag_map from language
-*	Tag_map = Vocab/tag_map.json
-*	Oov_prob = vocab/oov_prob -> input for lex_attr_getters
-*	Lemmatizeer possibly loaded
-*	Serializer_freqs = vocab/serializer.json
+## To do list
 
-Vectors added:
-*	/vocab/vec.bin are added to vocab
+### Required
 
-Tokenizer:
-*	No files from datapath, all from language data(?). And vocab as input.
+* Better (larger corpus) for generating vocab data
+  * Better word frequencies
+  * More Brown clusters (~3700)
+  * Retrain vectors on better corpus
+  * Retrain POS tagger
+  * Retrain NER
+* Train Dependency parser (fix error)
 
-Tagger
-*	Templates = Pos/templates.json
-*	Model = pos/model
+### Nice to have/experiment with
 
-Parser
-*	Cfg = Deps/config.json
-*	model = Deps/model
-
-NER
-*	Cfg = Deps/config.json
-* model = Deps/model
-
-## What did we do
-* created file `spacy/nl/__init__.py` to define the Ducth language
-* created file `spacy/nl/language_data.py` and populated stop words with known list, the rest was copied from German
-* added nl to `spacy/__init__.py`, `spacy/__init__.py` and `setup.py`
-* created test in `spacy/tests/integration/test_load_languages.py`
-* extracted 1000 documents from wikipedia, and tagged them with frog
-* crafted a [tag-map](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/data/nl-0.1.0/vocab/tag_map.json) for Dutch, to use universal POS tags
-* Added this tag_map also to `spacy/nl/language_data.py`
-* Trained a POS tagger on [UD data](https://github.com/UniversalDependencies/UD_Dutch) (see [this notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/Dutch%20tagger%20UD%20data.ipynb))
-* After training the POS tagger, we exported the Vocab files `strings.json`, `serializer.json`, `lexemes.bin`
-* We created a data folder nl-0.1.0 and we put `tag_map.json` and the files from the previous point in the subfolder `vocab`
-* In `nl-0.1.0/vocab/` we also created an empty `lemma_rules.json` and we copied the `gazetteer.json` from the English data folder
-* The Tagger model was exported to `nl-0.1.0/pos`.
-* We linked to this data from the spacy source code, so that we can make Dutch language pipelines
-* We trained the NER model based on [CONLL2002 data](http://www.cnts.ua.ac.be/conll2002/ner/) (see [NERtagger](https://github.com/nlesc-sherlock/spaCy-dutch/tree/master/models))
-* The NER model was exported to `nl-0.1.0/ner`.
-* Created Notebooks to evaluate [NER](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/EvaluateNER.ipynb) and [POS tagging](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/EvaluateTagger.ipynb)
-* Used spacy/bin/init_model.py to initalize the vocabulary. We did the following as prepartion:
- * Created brown clusters on the first 9999 items of wikipedia, see scripts/brown-clusters.sh
- * Created word2vec models with glove on the same corpus, see scripts/nlwiki.sh
- * Created a frequency file on the same corpus, see notebooks/CreateFrequencies.ipynb
-
-
-## Ideas for further improvement
-* Better brown clustering (more clusters, larger corpus)
-* Calculate frequencies on larger corpus
-* Better word2vec: longer vectors, larger corpus
-* specifiy input for tokenizer (pre/in/suffixes etc) for Dutch (now it is copied for German)
+* Files for tokenizer (pre/in/suffixes etc.) (now it is copied for German)
 * Throw away short sentences in the training data
-* Threshold pos tags on confidence
+* Threshold POS tags on confidence
 * Create download script for Dutch language data
-* Train NER
-* Train DEP
-* Evaluate POS. NER, DEP
-* Document what we have done + performance
-* Train brown clusters and add to training of tagger, ner and dep
-* Why is lexemes.bin empty?
-* Create vocab from wikipedia corpus as in [bin/init_model.py](https://github.com/nlesc-sherlock/spaCy/blob/master/bin/init_model.py)
-* Goal: Make pull request with what we've got (so others can help)
+* More thourough evaluation of POS, NER, and DEP
