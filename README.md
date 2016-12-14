@@ -1,9 +1,7 @@
 # spaCy-dutch
 Repository for creating models, vocabulary and other necessities for Dutch in Spacey
 
-## Data used for generating Dutch language resources
-
-### Brown clusters and word frequencies
+## Brown clusters and word frequencies
 
 To generate Brown clusters and word frequencies, we used a (small) subset of the
 Dutch Wikipedia. To be precise, we used the first 10000 documents from the
@@ -21,7 +19,7 @@ See [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/noteboo
 
 TODO: refer to training script
 
-### POS tagger
+## POS tagger
 
 The POS tagger was trained using the Dutch data from Universal Dependencies:
 * [UD_Dutch](https://github.com/UniversalDependencies/UD_Dutch)
@@ -48,7 +46,7 @@ In this notebook, the following data files are generated:
 * `vocab/serializer.json`
 * `pos/model`
 
-### Named Entity Recognizer
+## Named Entity Recognizer
 
 The NER was trained using data from [CoNLL 2002](http://www.cnts.ua.ac.be/conll2002/ner.tgz)
 ([more info](http://www.cnts.ua.ac.be/conll2002/ner/)). *The UD_Dutch(-LassySmall) data does
@@ -75,7 +73,7 @@ this performance is not bad, but not extremely good either.
 
 Improved POS tagging mifgt benefit these results.
 
-### Dependency parser
+## Dependency parser
 
 **Note** training the dependency parser for Dutch is not finished yet.
 
@@ -104,7 +102,7 @@ ValueError: Could not find a gold-standard action to supervise the dependency pa
 The GoldParse was projective.
 ```
 
-### Language data
+## Language data
 The data generated should consist of the following files:
 
 Lemmatizer:
