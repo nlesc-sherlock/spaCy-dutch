@@ -1,9 +1,55 @@
 # spaCy-dutch
-Repository for creating models, vocabulary and other necessities for Dutch in Spacey
 
-## Brown clusters and word frequencies
+Repository for creating models, vocabulary and other necessities for Dutch in spaCy.
+By explaining in detail what we did, we also hope it becomes easier for others to add new
+languages.
 
-To generate Brown clusters and word frequencies, we used a (small) subset of the
+## Add Dutch Language to spaCy
+
+To be able to load the spaCy pipleline for Dutch (or another language), the language
+must be added to spaCy:
+
+* Create file `spacy/nl/__init__.py` to define the Dutch language
+* Created file `spacy/nl/language_data.py` and populated stop words with existing list, the rest was copied from German
+* Add `nl` to `spacy/__init__.py`, `spacy/__init__.py` and `setup.py`
+* Create test in `spacy/tests/integration/test_load_languages.py`
+
+For people who just want to play with Dutch text in spaCy, the necessary adjustments
+to the code can be found in [this repository](https://github.com/nlesc-sherlock/spacy).
+Use the branch `dutch`. To install the Dutch version of spaCy:
+
+```
+# make sure you are using recent pip/virtualenv versions
+python -m pip install -U pip virtualenv
+
+git clone https://github.com/nlesc-sherlock/spaCy.git
+cd spaCy
+git checkout dutch
+
+virtualenv .env && source .env/bin/activate
+pip install -r requirements.txt
+pip install -e .
+```
+
+## Add Dutch language data folder
+
+This README specifies how we trained models for Dutch. The resulting models and
+other data can be downloaded from Zenodo. After downloading and extracting the archive,
+copy the nl-0.1.0 folder to `spaCy/spacy/data`.
+
+The Dutch pipeline using trained models can now be loaded with:
+```
+import spacy
+
+nlp = spacy.load('nl')
+```
+*Please note that the pipeline can also be loaded without the Dutch language data folder.
+And that spaCy will complain when something is missing from the language data.
+Keep this in mind when creating your own language resources.*
+
+## Create Vocab with Brown clusters, word frequencies, and vectors
+
+To generate Brown clusters, word frequencies, and vectors we used a (small) subset of the
 Dutch Wikipedia. To be precise, we used the first 10000 documents from the
 [Wikipedia dump of November 20, 2016](https://dumps.wikimedia.org/nlwiki/20161120/).
 
@@ -17,7 +63,27 @@ article text was extracted using [sift](https://github.com/wikilinks/sift) (requ
 [pyspark](http://spark.apache.org/docs/0.9.0/python-programming-guide.html)).
 See [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/extract%20wikipedia%20dump.ipynb)
 
-TODO: refer to training script
+Next run the script to initialize the model:
+
+```
+sh scripts/createvocab.sh path/to/temp path/to/corpus outputpath
+```
+
+`path/to/corpus` refers to a directory containing text files. There should be a text file
+for each document in the corpus. The files should be utf-8 encoded.
+
+Settings used to generate the Dutch data:
+* the corpus consists of 9999 (more or less random) Wikipedia articles (**this is much too small!**)
+* 100 Brown clusters (**this is much too small!**)
+* vector size 300 and window size 5
+
+The script downloads [brown-cluster](https://github.com/percyliang/brown-cluster)
+and [GloVe](https://github.com/stanfordnlp/GloVe) to generate models. This software is
+deleted when the script is done.
+
+The script creates files:
+
+*
 
 ## POS tagger
 
@@ -60,6 +126,11 @@ python models/NERtagger.py /path/to/CONLLdata/ /path/to/store/model/files
 
 The NER component is trained for 30 iterations.
 
+The script generates the following files:
+
+* `ner/model`
+* `ner/config.json`
+
 Performance can be calculated using [this
 notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/EvaluateNER.ipynb).
 
@@ -71,7 +142,7 @@ CoNLL 2002 testb | 73.61 | 71.42 | 72.50
 Compared to the [results from CoNLL 2002](http://www.cnts.ua.ac.be/conll2002/ner/),
 this performance is not bad, but not extremely good either.
 
-Improved POS tagging mifgt benefit these results.
+Improved POS tagging might benefit these results.
 
 ## Dependency parser
 
