@@ -1,6 +1,9 @@
 """
 Use:
 python NERtagger.py /path/to/CONLLdata/ /path/to/store/model
+
+Get the CoNLL 2002 data: http://www.cnts.ua.ac.be/conll2002/ner.tgz
+More information: http://www.cnts.ua.ac.be/conll2002/ner/
 """
 
 from spacy.pipeline import EntityRecognizer

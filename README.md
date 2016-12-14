@@ -50,6 +50,31 @@ In this notebook, the following data files are generated:
 
 ### Named Entity Recognizer
 
+The NER was trained using data from [CoNLL 2002](http://www.cnts.ua.ac.be/conll2002/ner.tgz)
+([more info](http://www.cnts.ua.ac.be/conll2002/ner/)). *The UD_Dutch(-LassySmall) data does
+not contain NER data.*
+
+After downloading and extracting the data (files `data/ned.train.gz`, `data/ned.testa`,
+`data/ned.testb`), run the script to create the NER component:
+```
+python models/NERtagger.py /path/to/CONLLdata/ /path/to/store/model/files
+```
+
+The NER component is trained for 30 iterations.
+
+Performance can be calculated using [this
+notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/EvaluateNER.ipynb).
+
+Test set | Precision | Recall | F-measure
+--- | --- | --- | ---
+CoNLL 2002 testa | 68.95 | 66.23 | 67.56
+CoNLL 2002 testb | 73.61 | 71.42 | 72.50
+
+Compared to the [results from CoNLL 2002](http://www.cnts.ua.ac.be/conll2002/ner/),
+this performance is not bad, but not extremely good either.
+
+Improved POS tagging mifgt benefit these results.
+
 ### Dependency parser
 
 **Note** training the dependency parser for Dutch is not finished yet.
