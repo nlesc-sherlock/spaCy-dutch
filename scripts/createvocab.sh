@@ -2,7 +2,7 @@
 ###################################################
 # This script creates the vocab data for a language.
 # Usage:
-# createvocab.sh path/to/temp corpusfile path/to/corpus outputpath
+# createvocab.sh path/to/temp path/to/corpus outputpath
 ###################################################
 
 ###################################################
@@ -33,9 +33,9 @@ INPUTPATH=$2
 OUTPUTPATH=$3
 
 # Nr of brown clusters to train
-NCLUSTERS=10
+NCLUSTERS=100
 # Vector length for word2vec - 300
-VECTOR_SIZE=50
+VECTOR_SIZE=300
 # Window size for word2vec
 WINDOW_SIZE=5
 
@@ -55,6 +55,7 @@ cp $INPUTPATH/* $TEMP/$LANG_ID/
 ###################################################
 # Build corpus file
 ###################################################
+echo "Build the corpus file..."
 CORPUS=$TEMP/corpus.txt
 python $DIR/build_corpusfile.py $LANG_ID $CORPUS_DIR $CORPUS
 
@@ -64,6 +65,7 @@ python $DIR/build_corpusfile.py $LANG_ID $CORPUS_DIR $CORPUS
 # Then run it on the corpus
 ###################################################
 if (($BROWN > 0));  then
+    echo "Training brown clusters..."
     mkdir -p $TEMP/brown
     git clone https://github.com/percyliang/brown-cluster
     cd brown-cluster
@@ -95,6 +97,7 @@ NUM_THREADS=8
 X_MAX=10
 
 if (($WORD2VEC > 0));  then
+    echo "Training word2vec..."
     #mkdir $TEMP/vectors
     git clone https://github.com/stanfordnlp/GloVe glove/
     cd glove
@@ -131,6 +134,7 @@ fi
 # Count frequencies
 ###################################################
 if (($FREQS > 0));  then
+    echo "Counting frequencies..."
     python $DIR/count_frequencies.py $LANG_ID $CORPUS_DIR $TEMP/$LANG_ID
     gzip $TEMP/$LANG_ID/freqs.txt
 fi
@@ -139,6 +143,7 @@ fi
 ###################################################
 # Create the actual vocab data
 ###################################################
+echo "Creating the vocab data..."
 python $DIR/init_model.py $LANG_ID $TEMP $TEMP $OUTPUTPATH
 
 
