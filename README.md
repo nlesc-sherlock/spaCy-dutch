@@ -1,7 +1,59 @@
 # spaCy-dutch
 Repository for creating models, vocabulary and other necessities for Dutch in Spacey
 
-## Language data
+## Data used for generating Dutch language resources
+
+### Brown clusters and word frequencies
+
+To generate Brown clusters and word frequencies, we used a (small) subset of the
+Dutch Wikipedia. To be precise, we used the first 10000 documents from the
+[Wikipedia dump of November 20, 2016](https://dumps.wikimedia.org/nlwiki/20161120/).
+
+After downloading the dump files
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles1.xml.bz2
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles2.xml.bz2
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles3.xml.bz2
+* https://dumps.wikimedia.org/nlwiki/20161120/nlwiki-20161120-pages-articles4.xml.bz2
+
+article text was extracted using [sift](https://github.com/wikilinks/sift) (requires
+[pyspark](http://spark.apache.org/docs/0.9.0/python-programming-guide.html)).
+See [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/extract%20wikipedia%20dump.ipynb)
+
+TODO: refer to training script
+
+### POS tagger
+
+The POS tagger was trained using the Dutch data from Universal Dependencies:
+* [UD_Dutch](https://github.com/UniversalDependencies/UD_Dutch)
+* [UD_Dutch-LassySmall](https://github.com/UniversalDependencies/UD_Dutch-LassySmall)
+
+For training, we used both train sets and for testing we used both test sets.
+See the [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/Dutch%20tagger%20UD%20data.ipynb)
+for number of training iterations and performance plots.
+
+The accuracy on the test set is 88.57 when using an empty vocabulary and default
+lexical attributes. When using the
+Dutch vocab (i.e., adding Brown clusters and word frequencies), accuracy is 88.43.
+Using the Dutch vocabulary did not improve POS tagger accuracy. This probably is
+due to the small corpus used to generate the Brown clusters, and the small number of
+clusters extracted. It is likely that the performance of the POS tagger will
+increase if it is retrained using better Brown cluster data.
+
+[Notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/notebooks/Dutch%20tagger%20UD%20data.ipynb)
+with code for training and evaluating the POS tagger (based on
+[this example](https://github.com/explosion/spaCy/blob/master/examples/training/train_tagger.py)).
+In this notebook, the following data files are generated:
+
+* `vocab/tag_map.json`
+* `vocab/serializer.json`
+* `pos/model`
+*
+
+### Named Entity Recognizer
+
+### Dependency parser
+
+### Language data
 The data generated should consist of the following files:
 
 Lemmatizer:
