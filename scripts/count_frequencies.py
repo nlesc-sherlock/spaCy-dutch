@@ -25,7 +25,6 @@ def count_frequencies(lang_id, corpus_dir):
 
     counts = PreshCounter()
     doccounts = PreshCounter()
-    print(corpus_dir)
     for filename in os.listdir(corpus_dir):
         with codecs.open(os.path.join(corpus_dir, filename),
                          encoding='utf-8') as f:
@@ -49,11 +48,6 @@ def write_frequencies(counts, doccounts, output_dir, tokenizer):
                 file_.write(output)
 
 def main(lang_id, corpus_dir, output_dir):
-    #corpus_dir = Path(corpus_dir)
-    #output_dir = Path(output_dir)
-
-    #assert output_dir.exists()
-
     counts, doccounts, tokenizer = count_frequencies(lang_id, corpus_dir)
     write_frequencies(counts, doccounts, output_dir, tokenizer)
 

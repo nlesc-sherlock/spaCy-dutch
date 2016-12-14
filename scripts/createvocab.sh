@@ -14,13 +14,9 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # absolute path where all intermediate results are stored
 TEMP=$(pwd)/temp
 
-# Path to corpus file, for brown clusters and word2vec.
-# This should be one utf-8 encoded file, with tokenized content.
-CORPUS=$1
-
 # Path to corpus directory, containing one file for each document.
 # These documents will be tokenized with spacy's tokenizer
-CORPUS_DIR=$2
+CORPUS_DIR=$1
 
 # Path to directory with input files. This should contain the following:
 #        * prefix.txt
@@ -31,15 +27,17 @@ CORPUS_DIR=$2
 #       * gazetteer.json
 #       * tagmap.json
 #       * lemma_rules.json
-INPUTPATH=$3
+INPUTPATH=$2
 
 # Output path where the vocab data will be stored
-OUTPUTPATH=$4
+OUTPUTPATH=$3
 
 # Nr of brown clusters to train
 NCLUSTERS=10
-# Vector length for word2vec
+# Vector length for word2vec - 300
 VECTOR_SIZE=50
+# Window size for word2vec
+WINDOW_SIZE=5
 
 # Which steps are executed
 BROWN=1
@@ -53,6 +51,12 @@ LANG_ID=nl
 ###################################################
 mkdir -p $TEMP/$LANG_ID/
 cp $INPUTPATH/* $TEMP/$LANG_ID/
+
+###################################################
+# Build corpus file
+###################################################
+CORPUS=$TEMP/corpus.txt
+python $DIR/build_corpusfile.py $LANG_ID $CORPUS_DIR $CORPUS
 
 ###################################################
 # Brown Clusters
@@ -86,7 +90,6 @@ MEMORY=4.0
 VOCAB_FILE=vocab.txt
 VOCAB_MIN_COUNT=5
 MAX_ITER=15
-WINDOW_SIZE=15
 BINARY=2
 NUM_THREADS=8
 X_MAX=10
