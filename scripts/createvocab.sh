@@ -2,7 +2,7 @@
 ###################################################
 # This script creates the vocab data for a language.
 # Usage:
-# createvocab.sh path/to/temp path/to/corpus outputpath
+# createvocab.sh path/to/corpus path/to/data outputpath
 ###################################################
 
 ###################################################
