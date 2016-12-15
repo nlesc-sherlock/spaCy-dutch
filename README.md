@@ -66,12 +66,22 @@ See [notebook](https://github.com/nlesc-sherlock/spaCy-dutch/blob/master/noteboo
 Next run the script to initialize the model:
 
 ```
-sh scripts/createvocab.sh path/to/temp path/to/corpus outputpath
+sh scripts/createvocab.sh path/to/corpus path/to/data outputpath
 ```
 
 `path/to/corpus` refers to a directory containing text files. There should be a text file
 for each document in the corpus. The files should be utf-8 encoded.
 
+`path/to/data` refers to a directory that should contain the following input files for the tokenizer and vocabulary data:
+* `prefix.txt`
+* `suffix.txt`
+* `infix.txt`
+* `morphs.json`
+* `specials.json`
+* `gazetteer.json`
+* `tagmap.json`
+* `lemma_rules.json`
+       
 Settings used to generate the Dutch data:
 * the corpus consists of 999 (more or less random) Wikipedia articles (**this is much too small!**)
 * 100 Brown clusters (**this is much too small!**)
